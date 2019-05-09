@@ -1,0 +1,46 @@
+version: 2
+jobs:
+  job_build_and_deploy:
+    working_directory: ~/project
+    docker:
+      - image: circleci/node:12-browsers
+    steps:
+      - checkout
+      - run:
+          name: Showing current build number, branch and commit hash
+          command: echo ${CIRCLE_BUILD_NUM}_${CIRCLE_BRANCH}_${CIRCLE_SHA1}
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          name: Installing local dependencies
+          command: npm install
+      - run:
+          name: Rebuilding node-sass
+          command: npm rebuild node-sass
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Linting
+          command: npm run lint
+      - run:
+          name: Unit testing
+          command: npm run test:ci
+      - run:
+          name: End-to-end testing
+          command: npm run e2e:ci
+      - run:
+          name: Building
+          command: npm run build:ssr
+      - run:
+          name: Deploying
+          command: npm run deployment
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - job_build_and_deploy
