@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/project
     docker:
-      - image: circleci/node:6.10-browsers
+      - image: circleci/node:lts
     steps:
       - checkout
       - run:
@@ -36,7 +36,7 @@ jobs:
   deploy:
     working_directory: ~/project
     docker:
-      - image: circleci/node:6.10-browsers
+      - image: circleci/node:lts
     steps:
       - run:
           name: Show current branch
