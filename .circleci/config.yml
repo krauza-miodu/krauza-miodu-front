@@ -25,7 +25,7 @@ jobs:
           command: npm run lint
       - run:
           name: Testing
-          command: npm run test:headless
+          command: npm run test:once
       - run:
           name: Building
           command: npm run build:ssr
