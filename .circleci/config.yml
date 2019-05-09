@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/project
     docker:
-      - image: circleci/node:lts
+      - image: circleci/node:12-browsers
     steps:
       - checkout
       - run:
@@ -24,8 +24,11 @@ jobs:
           name: Linting
           command: npm run lint
       - run:
-          name: Testing
-          command: npm run test:once
+          name: Unit testing
+          command: npm run test:ci
+      - run:
+          name: End-to-end testing
+          command: npm run e2e:ci
       - run:
           name: Building
           command: npm run build:ssr
@@ -36,7 +39,7 @@ jobs:
   deploy:
     working_directory: ~/project
     docker:
-      - image: circleci/node:lts
+      - image: circleci/node:12-browsers
     steps:
       - run:
           name: Show current branch
