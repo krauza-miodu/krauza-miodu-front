@@ -13,7 +13,8 @@
     "compile:server": "webpack --config webpack.server.config.js --progress --colors",
     "serve:ssr": "node dist/server",
     "build:ssr": "npm run build:client-and-server-bundles && npm run compile:server",
-    "build:client-and-server-bundles": "ng build --prod && ng run krauza-miodu-front:server:production"
+    "build:client-and-server-bundles": "ng build --prod && ng run krauza-miodu-front:server:production",
+    "deploy": "node deploy.js"
   },
   "private": true,
   "dependencies": {
@@ -31,6 +32,8 @@
     "@nguniversal/module-map-ngfactory-loader": "0.0.0",
     "core-js": "^2.5.4",
     "express": "^4.15.2",
+    "ftp": "^0.3.10",
+    "glob": "^7.1.4",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
