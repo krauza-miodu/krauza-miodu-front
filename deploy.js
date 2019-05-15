@@ -25,14 +25,13 @@ function uploadFile(file, destination) {
   ftpClient.put(file, destination, (error) => {
     if (error) throw error;
 
-    console.log(`${file} => ${destination}`);
+    console.info(`${file} => ${destination}`);
     ftpClient.end();
   });
 }
 
 function handlePath(path) {
-  const relativeFile = path.replace(`${basePath}/`, '').replace('server.js', 'app.js');
-  const destination = `${destinationPath}/${relativeFile}`;
+  const destination = `${destinationPath}/${path}`;
 
   if (fs.lstatSync(path).isDirectory()) {
     return createDirectory(destination);
@@ -42,12 +41,8 @@ function handlePath(path) {
 }
 
 ftpClient.on('ready', () => {
-  // Get an array of all files and directories
-  // in the given base path and send them to the
-  // `handlePath()` function to decide if a
-  // directory is created on the server or the
-  // file is uploaded.
   glob.sync(`${basePath}/**/*`).forEach(handlePath);
+  uploadFile(new Buffer('require("./dist/server.js");'), `${destinationPath}/app.js`)
 });
 
 ftpClient.connect(config);
