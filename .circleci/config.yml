@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  job_build_and_deploy:
     working_directory: ~/project
     docker:
       - image: circleci/node:12-browsers
@@ -35,23 +35,9 @@ jobs:
       - run:
           name: Building
           command: npm run build:ssr
-      - save_cache:
-          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - dist
-  deploy:
-    working_directory: ~/project
-    docker:
-      - image: circleci/node:12-browsers
-    steps:
-      - run:
-          name: Show current branch and commit hash
-          command: echo ${CIRCLE_BRANCH} ${CIRCLE_SHA1}
       - add_ssh_keys:
           fingerprints:
             - "53:26:ff:6a:83:ee:fb:a6:c3:e1:9a:f1:c8:b8:6b:ee"
-      - restore_cache:
-          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Deploy the application
           command: npm run deployment
@@ -60,11 +46,8 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - develop
+      - job_build_and_deploy
+      filters:
+        branches:
+          only:
+            - develop
