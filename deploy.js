@@ -28,7 +28,8 @@ printHeading('Connecting via SSH');
 ssh.connect({
   host: process.env.SSH_HOST,
   username: process.env.SSH_USERNAME,
-  port: process.env.SSH_PORT
+  port: process.env.SSH_PORT,
+  privateKey: '/.ssh/id_rsa'
 }).catch((e) => {
   console.log(e);
   printInfo('Unable to connect via SSH.', true);
