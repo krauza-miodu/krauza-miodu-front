@@ -39,7 +39,7 @@ jobs:
           fingerprints:
             - "53:26:ff:6a:83:ee:fb:a6:c3:e1:9a:f1:c8:b8:6b:ee"
       - run:
-          name: Deploy the application
+          name: Deploying
           command: npm run deployment
 
 workflows:
@@ -47,7 +47,7 @@ workflows:
   build_and_deploy:
     jobs:
       - job_build_and_deploy
-      filters:
-        branches:
-          only:
-            - develop
+        filters:
+          branches:
+            only:
+              - develop
