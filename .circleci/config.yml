@@ -50,11 +50,11 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "53:26:ff:6a:83:ee:fb:a6:c3:e1:9a:f1:c8:b8:6b:ee"
+      - restore_cache:
+          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Deploy the application
           command: npm run deployment
-      - restore_cache:
-          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
 
 workflows:
   version: 2
