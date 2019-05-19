@@ -47,6 +47,9 @@ jobs:
       - run:
           name: Show current branch and commit hash
           command: echo ${CIRCLE_BRANCH} ${CIRCLE_SHA1}
+      - add_ssh_keys:
+          fingerprints:
+            - "53:26:ff:6a:83:ee:fb:a6:c3:e1:9a:f1:c8:b8:6b:ee"
       - run:
           name: Deploy the application
           command: npm run deployment
