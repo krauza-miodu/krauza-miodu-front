@@ -29,7 +29,14 @@ console.log(`  _  __                         __  __ _           _
 printHeading('Creating private key file');
 
 new Promise((resolve, reject) => {
-  const privateKeyContents = process.env.SSH_KEY.replace(' ', '\n');
+  const privateKeyBeg = '-----BEGIN RSA PRIVATE KEY-----';
+  const privateKeyEnd = '-----END RSA PRIVATE KEY-----';
+  let privateKeyContents = process.env.SSH_KEY.replace(' ', '\n');
+  privateKeyContents = privateKeyContents
+    .replace(privateKeyBeg, '')
+    .replace(privateKeyEnd, '')
+    .replace(/ /g, '\r\n');
+  privateKeyContents = `${privateKeyBeg}\r\n${privateKeyContents}${privateKeyEnd}`;
 
   fs.writeFile(privateKeyLocation, privateKeyContents, (error) => {
     if (error) {
@@ -38,8 +45,8 @@ new Promise((resolve, reject) => {
     } else {
       printInfo('File was successfully created.');
       resolve();
-    }
-  });
+  }
+});
 }).then(() => {
   printHeading('Connecting via SSH');
 
@@ -104,7 +111,7 @@ new Promise((resolve, reject) => {
   printHeading('Finishing');
   printInfo('Deployment completed successfully!');
   console.log('\n\n');
-  process.exit(-1);
+  process.exit();
 }).catch(() => {
   printHeading('Finishing');
   printInfo('Deployment has failed.', true);
