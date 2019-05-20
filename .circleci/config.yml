@@ -16,13 +16,13 @@ jobs:
       - run:
           name: Install local dependencies
           command: npm install
+      - run:
+          name: Rebuild node-sass
+          command: npm rebuild node-sass
       - save_cache:
           key: v1-dependencies-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - run:
-          name: Rebuild node-sass
-          command: npm rebuild node-sass --force
       - run:
           name: Linting
           command: npm run lint
