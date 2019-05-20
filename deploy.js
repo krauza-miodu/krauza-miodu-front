@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 const node_ssh = require('node-ssh');
-const fs = require('fs');
 const ssh = new node_ssh();
 
 const version = `${process.env.CIRCLE_BUILD_NUM}_${process.env.CIRCLE_BRANCH}_${process.env.CIRCLE_SHA1}`;
 const basePath = './dist';
 const destinationPath = process.env.DEPLOYMENT_PATH;
 const fullDestinationPath = `${destinationPath}/${version}`;
-const privateKeyLocation = './key';
 
 function printHeading(text) {
   console.log(`\n\n\n=[ ${text} ]=\n`);
@@ -16,6 +14,16 @@ function printHeading(text) {
 function printInfo(text, isError = false) {
   const fn = isError ? console.error : console.info;
   fn(`> ${text}`);
+}
+
+function getPrivateKey() {
+  const privateKeyBeg = '-----BEGIN RSA PRIVATE KEY-----';
+  const privateKeyEnd = '-----END RSA PRIVATE KEY-----';
+  const privateKeyContents = process.env.SSH_KEY
+    .replace(privateKeyBeg, '')
+    .replace(privateKeyEnd, '')
+    .replace(/ /g, '\r\n');
+  return `${privateKeyBeg}\r\n${privateKeyContents}${privateKeyEnd}`;
 }
 
 console.log(`  _  __                         __  __ _           _       
@@ -28,36 +36,14 @@ console.log(`  _  __                         __  __ _           _
 
 printHeading('Creating private key file');
 
-new Promise((resolve, reject) => {
-  const privateKeyBeg = '-----BEGIN RSA PRIVATE KEY-----';
-  const privateKeyEnd = '-----END RSA PRIVATE KEY-----';
-  let privateKeyContents = process.env.SSH_KEY
-    .replace(privateKeyBeg, '')
-    .replace(privateKeyEnd, '')
-    .replace(/ /g, '\r\n');
-  privateKeyContents = `${privateKeyBeg}\r\n${privateKeyContents}${privateKeyEnd}`;
-
-  fs.writeFile(privateKeyLocation, privateKeyContents, (error) => {
-    if (error) {
-      printInfo('File could not be created.', true);
-      reject();
-    } else {
-      printInfo('File was successfully created.');
-      resolve();
-  }
-});
-}).then(() => {
-  printHeading('Connecting via SSH');
-
-  return ssh.connect({
+ssh.connect({
     host: process.env.SSH_HOST,
     username: process.env.SSH_USERNAME,
     port: process.env.SSH_PORT,
-    privateKey: privateKeyLocation
-  })
-}).catch((e) => {
-  console.log(e);
+    privateKey: getPrivateKey()
+}).catch((error) => {
   printInfo('Unable to connect via SSH.', true);
+  console.log({ error });
   return Promise.reject();
 }).then(() => {
   printInfo(`Connected via SSH.`)
