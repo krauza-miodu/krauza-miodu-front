@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 const node_ssh = require('node-ssh');
+const fs = require('fs');
 const ssh = new node_ssh();
 
 const version = `${process.env.CIRCLE_BUILD_NUM}_${process.env.CIRCLE_BRANCH}_${process.env.CIRCLE_SHA1}`;
 const basePath = './dist';
 const destinationPath = process.env.DEPLOYMENT_PATH;
 const fullDestinationPath = `${destinationPath}/${version}`;
+const privateKeyLocation = './key';
 
 function printHeading(text) {
   console.log(`\n\n\n=[ ${text} ]=\n`);
@@ -23,13 +25,30 @@ console.log(`  _  __                         __  __ _           _
  | . \\| | | (_| | |_| |/ / (_| | |  | | | (_) | (_| | |_| |
  |_|\\_\\_|  \\__,_|\\__,_/___\\__,_|_|  |_|_|\\___/ \\__,_|\\__,_|`);
 
-printHeading('Connecting via SSH');
 
-ssh.connect({
-  host: process.env.SSH_HOST,
-  username: process.env.SSH_USERNAME,
-  port: process.env.SSH_PORT,
-  privateKey: '/.ssh/id_rsa'
+printHeading('Creating private key file');
+
+new Promise((resolve, reject) => {
+  const privateKeyContents = process.env.SSH_KEY.replace(' ', '\n');
+
+  fs.writeFile(privateKeyLocation, privateKeyContents, (error) => {
+    if (error) {
+      printInfo('File could not be created.', true);
+      reject();
+    } else {
+      printInfo('File was successfully created.');
+      resolve();
+    }
+  });
+}).then(() => {
+  printHeading('Connecting via SSH');
+
+  return ssh.connect({
+    host: process.env.SSH_HOST,
+    username: process.env.SSH_USERNAME,
+    port: process.env.SSH_PORT,
+    privateKey: privateKeyLocation
+  })
 }).catch((e) => {
   console.log(e);
   printInfo('Unable to connect via SSH.', true);
