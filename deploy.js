@@ -31,8 +31,7 @@ printHeading('Creating private key file');
 new Promise((resolve, reject) => {
   const privateKeyBeg = '-----BEGIN RSA PRIVATE KEY-----';
   const privateKeyEnd = '-----END RSA PRIVATE KEY-----';
-  let privateKeyContents = process.env.SSH_KEY.replace(' ', '\n');
-  privateKeyContents = privateKeyContents
+  let privateKeyContents = process.env.SSH_KEY
     .replace(privateKeyBeg, '')
     .replace(privateKeyEnd, '')
     .replace(/ /g, '\r\n');
