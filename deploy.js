@@ -37,7 +37,7 @@ new Promise((resolve, reject) => {
     .replace(privateKeyEnd, '')
     .replace(/ /g, '\r\n');
   privateKeyContents = `${privateKeyBeg}\r\n${privateKeyContents}${privateKeyEnd}`;
-
+console.log({privateKeyContents});
   fs.writeFile(privateKeyLocation, privateKeyContents, (error) => {
     if (error) {
       printInfo('File could not be created.', true);
