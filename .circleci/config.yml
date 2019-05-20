@@ -7,17 +7,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Show current branch and commit hash
-          command: echo ${CIRCLE_BRANCH} ${CIRCLE_SHA1}
+          name: Showing current build number, branch and commit hash
+          command: echo ${CIRCLE_BUILD_NUM}_${CIRCLE_BRANCH}_${CIRCLE_SHA1}
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
       - run:
-          name: Install local dependencies
+          name: Installing local dependencies
           command: npm install
       - run:
-          name: Rebuild node-sass
+          name: Rebuilding node-sass
           command: npm rebuild node-sass
       - save_cache:
           key: v1-dependencies-{{ checksum "package.json" }}
@@ -35,9 +35,6 @@ jobs:
       - run:
           name: Building
           command: npm run build:ssr
-      - add_ssh_keys:
-          fingerprints:
-            - "53:26:ff:6a:83:ee:fb:a6:c3:e1:9a:f1:c8:b8:6b:ee"
       - run:
           name: Deploying
           command: npm run deployment
