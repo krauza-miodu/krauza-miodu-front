@@ -27,5 +27,5 @@ real-world production application, just with open codebase.
 
 # License
 
-This project is [https://en.wikipedia.org/wiki/MIT_License](MIT licensed).
+This project is <a href="https://en.wikipedia.org/wiki/MIT_License">MIT licensed</a>.
 Feel free to use it for educational purposes or your own commercial projects.
