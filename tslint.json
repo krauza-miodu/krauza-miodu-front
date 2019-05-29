@@ -115,7 +115,6 @@
     "use-lifecycle-interface": true,
     "use-pipe-decorator": true,
     "use-pipe-transform-interface": true,
-    "angular-whitespace": [true, "check-interpolation", "check-semicolon", "check-pipe"],
     "component-class-suffix": [true, "Component"],
     "directive-class-suffix": [true, "Directive"],
     "use-component-selector": true,
