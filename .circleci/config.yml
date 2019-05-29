@@ -43,4 +43,7 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - job_build_and_deploy
+      - job_build_and_deploy:
+          filters:
+            branches:
+              only: master
