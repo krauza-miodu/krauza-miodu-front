@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const fs = require('fs');
 const node_ssh = require('node-ssh');
 const ssh = new node_ssh();
 
@@ -16,6 +17,15 @@ function printInfo(text, isError = false) {
   fn(`> ${text}`);
 }
 
+function writeFile(file, data) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(file, data, error => {
+      if (error) reject(error);
+      resolve("File created.");
+    });
+  });
+}
+
 function getPrivateKey() {
   const privateKeyBeg = '-----BEGIN RSA PRIVATE KEY-----';
   const privateKeyEnd = '-----END RSA PRIVATE KEY-----';
@@ -26,9 +36,9 @@ function getPrivateKey() {
   return `${privateKeyBeg}\r\n${privateKeyContents}${privateKeyEnd}`;
 }
 
-console.log(`  _  __                         __  __ _           _       
- | |/ /                        |  \\/  (_)         | |      
- | ' / _ __ __ _ _   _ ______ _| \\  / |_  ___   __| |_   _ 
+console.log(`  _  __                         __  __ _           _
+ | |/ /                        |  \\/  (_)         | |
+ | ' / _ __ __ _ _   _ ______ _| \\  / |_  ___   __| |_   _
  |  < | '__/ _\` | | | |_  / _\` | |\\/| | |/ _ \\ / _\` | | | |
  | . \\| | | (_| | |_| |/ / (_| | |  | | | (_) | (_| | |_| |
  |_|\\_\\_|  \\__,_|\\__,_/___\\__,_|_|  |_|_|\\___/ \\__,_|\\__,_|`);
@@ -55,6 +65,10 @@ ssh.connect({
   return ssh.execCommand(`rm -Rf ./${destinationPath}/public_nodejs`)
 }).then(() => {
   return ssh.execCommand(`rm -Rf ./${fullDestinationPath}`)
+}).then(() => {
+  printInfo('Done.');
+  printHeading('Creating version file');
+  return writeFile(`${basePath}/browser/version.txt`, version);
 }).then(() => {
   printInfo('Done.');
   printHeading('Uploading files');
