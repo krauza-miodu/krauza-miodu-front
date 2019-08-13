@@ -1,6 +1,6 @@
 # Krauza Miodu
 
-[![CircleCI](https://circleci.com/gh/wiktor-mazur/krauza-miodu-front/tree/master.svg?style=svg)](https://circleci.com/gh/wiktor-mazur/krauza-miodu-front/tree/master)
+[![CircleCI](https://circleci.com/gh/krauza-miodu/krauza-miodu-front.svg?style=svg)](https://circleci.com/gh/krauza-miodu/krauza-miodu-front)
 
 Front-end application for [www.krauzamiodu.pl](http://krauzamiodu.pl/) written in Angular 8. This intended to be a
 real-world production application, just with open codebase.
